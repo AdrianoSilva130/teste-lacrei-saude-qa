@@ -103,3 +103,13 @@ POST /v1/lacreiid/user/
 **Conclusão**
 
 O endpoint de cadastro manteve estabilidade durante a execução, sem apresentar erros HTTP. No entanto, o tempo de resposta foi significativamente superior ao limite esperado, alcançando um P95 de 53,38 segundos. Além disso, apenas 13 requisições foram concluídas durante os 30 segundos de teste, indicando degradação de desempenho sob carga e evidenciando oportunidade de otimização para esse fluxo.
+
+### Relatório Lighthouse
+
+O relatório completo gerado pelo Google Lighthouse encontra-se em:
+
+```text
+performance/lighthouse-report.html
+```
+
+Para visualizar o relatório, basta abrir o arquivo `lighthouse-report.html` em qualquer navegador.
