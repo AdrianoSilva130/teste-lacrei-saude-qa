@@ -117,3 +117,54 @@ Para visualizar o relatório, basta abrir o arquivo `lighthouse-report.html` em 
 ## Documentação
 
 - [Testes de Acessibilidade](./docs/acessibilidade.md)
+
+---
+
+## Testes de Acessibilidade e Responsividade
+
+### Acessibilidade
+
+Foi realizada validação utilizando o Lighthouse e testes manuais de navegação por teclado.
+
+**Resultado Lighthouse:**
+- Acessibilidade: 96/100
+
+**Validações realizadas:**
+- Navegação utilizando tecla Tab.
+- Navegação reversa utilizando Shift + Tab.
+- Validação de foco visual.
+- Acionamento de botões utilizando Enter/Espaço.
+- Validação de links via teclado.
+- Verificação de ausência de armadilhas de foco.
+
+**Insight encontrado:**
+Foi identificado que os elementos de perfil e logout não são acessíveis durante a navegação utilizando a tecla Tab.
+
+Também foi identificado um problema no recurso VLibras, onde o botão permite interação, porém o recurso não é carregado devido a erro no carregamento do script.
+
+---
+
+### Responsividade
+
+Foram realizados testes em diferentes resoluções:
+
+**Mobile**
+- Resolução: 390x844
+- Resultado: ✅ Aprovado
+
+Validações:
+- Layout adaptado ao tamanho da tela.
+- Elementos sem cortes ou sobreposição.
+- Botões e menus acessíveis.
+- Formulários funcionais.
+- Navegação adequada.
+
+**Desktop**
+- Resolução: 1366x768
+- Resultado: ⚠️ Parcial
+
+Insights encontrados:
+- Sobreposição parcial de texto e imagens nas seções:
+  - "O que é a Lacrei Saúde"
+  - "Missão, Visão e Valores"
+- Recurso VLibras não carregado corretamente.
