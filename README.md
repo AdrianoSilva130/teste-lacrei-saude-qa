@@ -113,3 +113,7 @@ performance/lighthouse-report.html
 ```
 
 Para visualizar o relatório, basta abrir o arquivo `lighthouse-report.html` em qualquer navegador.
+
+## Documentação
+
+- [Testes de Acessibilidade](./docs/acessibilidade.md)
