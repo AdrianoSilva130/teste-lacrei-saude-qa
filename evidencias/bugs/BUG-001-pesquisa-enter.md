@@ -27,4 +27,4 @@ Média
 Funcionalidade / Usabilidade / Acessibilidade
 
 ## Evidência
-Adicionar print ou vídeo demonstrando o comportamento.
+![Clicar duas vezes no enter para fazer a pesquisa](./bug-click-duas-vezes.gif)

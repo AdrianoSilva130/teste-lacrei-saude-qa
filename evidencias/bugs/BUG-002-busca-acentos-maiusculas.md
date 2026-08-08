@@ -52,3 +52,5 @@ Adicionar print ou vídeo demonstrando:
 
 1. Pesquisa utilizando termo com acento ou letra maiúscula sem resultados.
 2. Pesquisa utilizando o mesmo termo sem acento e em letras minúsculas com resultados.
+
+![Não faz a pesquisa com diferentes letras, acentos,](./bug-click-duas-vezes.gif)

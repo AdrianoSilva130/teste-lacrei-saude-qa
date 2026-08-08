@@ -41,3 +41,5 @@ Adicionar print ou vídeo demonstrando:
 - Número de celular informado;
 - Indicador visual de formato válido;
 - Mensagem de erro apresentada após clicar em "Enviar código".
+
+![Mensagem de erro com telefone correto](./bug-celular.gif)

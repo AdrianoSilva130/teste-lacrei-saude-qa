@@ -30,4 +30,4 @@ Média
 Funcionalidade / Validação de dados
 
 ## Evidência
-Adicionar print ou vídeo do cadastro realizado e da mensagem informando o envio do link de confirmação.
+![Email sem domínio](./bug-cadastro-sem-domínio.mp4)
