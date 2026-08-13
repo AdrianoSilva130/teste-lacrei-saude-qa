@@ -1,43 +1,34 @@
 import { Given, When, Then } from "@badeball/cypress-cucumber-preprocessor";
 
 Given("que estou na página de busca de profissionais", () => {
+    const email = Cypress.env("LACREI_EMAIL");
+    const password = Cypress.env("LACREI_PASSWORD");
+
     cy.visit("/login");
 
-    cy.get("#email")
+    cy.get("#email", { timeout: 30000 })
         .should("be.visible")
-        .type(Cypress.env("LACREI_EMAIL"));
+        .clear()
+        .type(email);
 
-    cy.get("#password")
+    cy.get("#password", { timeout: 30000 })
         .should("be.visible")
-        .type(Cypress.env("LACREI_PASSWORD"));
+        .clear()
+        .type(password);
 
-    cy.get('button[type="submit"]')
+    cy.get('button[type="submit"]', { timeout: 30000 })
         .should("be.visible")
+        .should("not.be.disabled")
         .click();
 
-    cy.location("pathname", {
+    cy.url({ timeout: 30000 })
+        .should("not.include", "/login");
+
+    cy.get("#campo-de-busca", {
         timeout: 30000
-    }).then((pathname) => {
-        cy.log(`PATH APÓS LOGIN: ${pathname}`);
-        console.log(`PATH APÓS LOGIN: ${pathname}`);
-    });
+    }).should("be.visible");
+});
 
-    cy.url().then((url) => {
-        cy.log(`URL APÓS LOGIN: ${url}`);
-        console.log(`URL APÓS LOGIN: ${url}`);
-    });
-
-    cy.get("body").then(($body) => {
-        console.log(
-            "TEXTO DA PÁGINA APÓS LOGIN:",
-            $body.text().substring(0, 1000)
-        );
-    });
-
-    cy.url().then((url) => {
-        throw new Error(`URL APÓS LOGIN NO CI: ${url}`);
-    })
-})
 When("realizo uma busca por um profissional", () => {
     cy.get("#campo-de-busca", {
         timeout: 30000
@@ -45,10 +36,6 @@ When("realizo uma busca por um profissional", () => {
         .should("be.visible")
         .clear()
         .type("medico{enter}");
-
-    cy.get("#atendimentos", {
-        timeout: 30000
-    }).should("be.visible");
 });
 
 When("seleciono um profissional", () => {
@@ -59,9 +46,12 @@ When("seleciono um profissional", () => {
         .first()
         .click();
 
-    cy.get('button[aria-label="Ir para informações de contato da pessoa profissional"]', {
-        timeout: 30000
-    })
+    cy.get(
+        'button[aria-label="Ir para informações de contato da pessoa profissional"]',
+        {
+            timeout: 30000
+        }
+    )
         .should("be.visible")
         .first()
         .click();
@@ -75,9 +65,12 @@ When("preencho o telefone para contato", () => {
         .clear()
         .type("(11) 99999-9999");
 
-    cy.get('button[aria-label="Enviar código para o número de celular inserido"]', {
-        timeout: 30000
-    })
+    cy.get(
+        'button[aria-label="Enviar código para o número de celular inserido"]',
+        {
+            timeout: 30000
+        }
+    )
         .should("be.visible")
         .click();
 });

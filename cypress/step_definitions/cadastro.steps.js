@@ -8,7 +8,6 @@ Given("que estou na página de cadastro", () => {
 });
 
 When("preencho o formulário de cadastro com dados válidos", () => {
-
     const nome = faker.person.firstName();
     const sobrenome = faker.person.lastName();
     const email = `qa.${Date.now()}@teste.com`;
@@ -40,7 +39,11 @@ When("preencho o formulário de cadastro com dados válidos", () => {
 });
 
 When("envio o formulário de cadastro", () => {
-    cy.get('button[aria-label="Criar cadastro no site Lacrei Saúde"]')
+    cy.get('button[aria-label="Criar cadastro no site Lacrei Saúde"]', {
+        timeout: 30000
+    })
+        .should("be.visible")
+        .should("not.be.disabled")
         .click();
 });
 
