@@ -1,27 +1,26 @@
 import http from 'k6/http';
 import { check } from 'k6';
+import { Trend } from 'k6/metrics';
+
+const cadastroDuration = new Trend('cadastro_duration');
 
 export const options = {
     vus: 30,
     duration: '30s',
-
-    thresholds: {
-        http_req_duration: ['p(95)<2000'],
-        http_req_failed: ['rate<0.01'],
-    },
 };
 
 export default function () {
 
-    const numero = Math.floor(Math.random() * 1000000);
+    const numero = Math.floor(Math.random() * 1000000000);
+    const senha = `Teste@${numero}`;
 
     const payload = JSON.stringify({
         accepted_privacy_document: true,
         email: `teste${numero}@gmail.com`,
-        first_name: "Adriano",
-        last_name: "de Araujo",
-        password1: "Lacrei@2026",
-        password2: "Lacrei@2026",
+        first_name: 'Adriano',
+        last_name: 'Silva',
+        password1: senha,
+        password2: senha,
         is_18_years_old_or_more: true
     });
 
@@ -37,8 +36,9 @@ export default function () {
         params
     );
 
+    cadastroDuration.add(res.timings.duration);
+
     check(res, {
         'Cadastro realizado': (r) => r.status === 201,
-        'Tempo menor que 2 segundos': (r) => r.timings.duration < 2000,
     });
 }

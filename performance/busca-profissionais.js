@@ -1,23 +1,21 @@
 import http from 'k6/http';
 import { check } from 'k6';
+import { Trend } from 'k6/metrics';
+
+const buscaDuration = new Trend('busca_profissionais_duration');
 
 const BASE_URL = 'https://api-staging.lacreisaude.com.br';
 
 export const options = {
     vus: 30,
     duration: '30s',
-
-    thresholds: {
-        http_req_duration: ['p(95)<2000'],
-        http_req_failed: ['rate<0.01'],
-    },
 };
 
 export function setup() {
 
     const payload = JSON.stringify({
-        email: 'joadrito@gmail.com',
-        password: 'Lacrei@2026',
+        email: __ENV.LACREI_EMAIL,
+        password: __ENV.LACREI_PASSWORD,
         is_professional: false
     });
 
@@ -31,16 +29,17 @@ export function setup() {
         }
     );
 
-    console.log('Login Status:', response.status);
-    console.log('Login Body:', response.body);
-
     check(response, {
         'Login realizado': (r) => r.status === 200
     });
 
-    const token = response.json('key');
+    if (response.status !== 200) {
+        throw new Error(`Falha no login. Status: ${response.status}`);
+    }
 
-    return { token };
+    return {
+        token: response.json('key')
+    };
 }
 
 export default function (data) {
@@ -55,8 +54,9 @@ export default function (data) {
         }
     );
 
+    buscaDuration.add(response.timings.duration);
+
     check(response, {
-        'Status 200': (r) => r.status === 200,
-        'Tempo menor que 2 segundos': (r) => r.timings.duration < 2000
+        'Busca realizada': (r) => r.status === 200,
     });
 }

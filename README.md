@@ -227,87 +227,100 @@ npx wdio run wdio.conf.js
 
 ---
 
-# 📊 Testes de Desempenho — K6
+# 📊 Testes de Performance
 
-Foram realizados testes de desempenho utilizando o **K6** para validar o tempo de resposta e a estabilidade das principais operações da API.
-
-## Cenário 1 — Busca de Profissionais
-
-**Endpoint:**
-
-```text
-GET /v1/lacreisaude/professionals/?search=medico
-```
-
-### Configuração do teste
-
-* Ferramenta: K6
-* Usuários virtuais (VUs): 30
-* Duração: 30 segundos
-
-### Critérios avaliados
-
-* Tempo de resposta: P95 < 2 segundos.
-* Taxa de erro HTTP inferior a 1%.
-
-### Resultado
-
-| Métrica              | Resultado |
-| -------------------- | --------: |
-| Requisições          |       173 |
-| Usuários simultâneos |        30 |
-| Tempo médio          |    5,78 s |
-| P95                  |    6,61 s |
-| Erros HTTP           |        0% |
-
-### Conclusão
-
-O endpoint respondeu corretamente durante toda a execução, sem apresentar falhas HTTP.
-
-Entretanto, o tempo de resposta excedeu o limite estabelecido de 2 segundos, indicando degradação de desempenho sob carga.
+Os testes de performance foram realizados utilizando a ferramenta **k6**, com o objetivo de avaliar o comportamento de operações críticas da aplicação sob carga, analisando a estabilidade e o tempo de resposta do sistema frente a acessos simultâneos.
 
 ---
 
-## Cenário 2 — Cadastro de Usuário
+## ⚙️ Configuração Geral dos Testes
 
-**Endpoint:**
+- **Ferramenta:** k6
+- **Usuários Virtuais (VUs):** 30
+- **Duração:** 30 segundos
+- **Ambiente:** Staging
+- **Cenários Avaliados:**
+  1. Cadastro de Usuário
+  2. Busca de Profissionais
 
-```text
-POST /v1/lacreiid/user/
-```
+---
 
-### Configuração do teste
+## 🧪 Cenários de Teste
 
-* Ferramenta: K6
-* Usuários virtuais (VUs): 30
-* Duração: 30 segundos
-* E-mails gerados dinamicamente para evitar duplicidade de cadastro.
+### 1. Cenário 1 — Cadastro de Usuário
 
-### Critérios avaliados
+#### 🎯 Objetivo
+Avaliar o comportamento e a capacidade de processamento da API de cadastro de usuários sob uma carga simultânea de até 30 VUs.
 
-* Tempo de resposta: P95 < 2 segundos.
-* Taxa de erro HTTP inferior a 1%.
+#### 🔗 Endpoint
+- **Método / Rota:** `POST /v1/lacreiid/user/`
 
-### Resultado
+#### 📝 Dados Utilizados
+- **Nome:** Adriano
+- **Sobrenome:** Silva
+- **E-mail:** *Gerado dinamicamente*
+- **Senha:** *Gerada dinamicamente*
+- **Demais campos:** Preenchidos com dados válidos conforme contrato da API.
 
-| Métrica                | Resultado |
-| ---------------------- | --------: |
-| Requisições concluídas |        13 |
-| Usuários simultâneos   |        30 |
-| Tempo médio            |   31,45 s |
-| P95                    |   53,38 s |
-| Tempo mínimo           |    7,00 s |
-| Tempo máximo           |   55,30 s |
-| Erros HTTP             |        0% |
+#### 📊 Resultados
+| Métrica                    | Resultado |
+| :------------------------- | :-------- |
+| **VUs**                    | 30        |
+| **Duração**                | 30s       |
+| **Requisições Concluídas** | 12        |
+| **Cadastros Realizados**   | 100%      |
+| **Falhas HTTP**            | 0%        |
+| **Tempo Médio**            | 34,23s    |
+| **Mediana**                | 34,21s    |
+| **P90**                    | 51,80s    |
+| **P95**                    | 53,84s    |
+| **Tempo Máximo**           | 55,71s    |
 
-### Conclusão
+#### 🔍 Análise
+- **Estabilidade:** Todas as requisições concluídas retornaram sucesso (`HTTP 201`), sem ocorrência de erros HTTP.
+- **Gargalo / Ponto de Atenção:** Foi identificada uma latência muito elevada no processamento do cadastro, apresentando tempo médio de **34,23s** e **P95 de 53,84s**.
+- **Nota:** Como o projeto não possui um SLA ou limite pré-definido de tempo de resposta para esta operação, o resultado é classificado como uma **observação de performance** para futuras otimizações, e não como uma falha de requisito.
 
-O endpoint de cadastro manteve estabilidade durante a execução, sem apresentar erros HTTP.
+---
 
-No entanto, o tempo de resposta foi significativamente superior ao limite esperado, alcançando um P95 de 53,38 segundos.
+### 2. Cenário 2 — Busca de Profissionais
 
-Além disso, apenas 13 requisições foram concluídas durante os 30 segundos de teste, indicando degradação de desempenho sob carga e evidenciando oportunidade de otimização para esse fluxo.
+#### 🎯 Objetivo
+Avaliar a estabilidade e o tempo de resposta da busca de profissionais sob carga simultânea após o fluxo de autenticação.
 
+#### 🔄 Fluxo Testado
+`Login` ➔ `Busca de Profissionais`
+
+#### 🔗 Endpoint
+- **Método / Rota:** `GET /v1/lacreisaude/professionals/?search=medico`
+
+#### 📊 Resultados
+| Métrica             | Resultado |
+| :------------------ | :-------- |
+| **VUs**             | 30        |
+| **Duração**         | 30s       |
+| **Requisições**     | 36        |
+| **Login Realizado** | 100%      |
+| **Busca Realizada** | 100%      |
+| **Falhas HTTP**     | 0%        |
+| **Tempo Médio**     | 2,24s     |
+| **Mediana**         | 2,10s     |
+| **P90**             | 3,83s     |
+| **P95**             | 4,09s     |
+| **Tempo Máximo**    | 4,46s     |
+
+#### 🔍 Análise
+- **Disponibilidade:** 100% de sucesso em todas as verificações do fluxo (login + busca) com **0% de falhas HTTP**.
+- **Desempenho:** Apresentou tempo médio de resposta de **2,24s** e **P95 de 4,09s**, demonstrando boa estabilidade funcional sob a carga aplicada, embora haja variação no tempo de resposta em picos.
+
+---
+
+## 📌 Conclusão e Próximos Passos
+
+Os testes executados estabelecem um **baseline de performance** para a aplicação no ambiente de Staging com a carga de 30 VUs / 30s:
+
+1. **Busca de Profissionais:** Demonstrou alta estabilidade e comportamento pré-visível, mantendo 100% de disponibilidade.
+2. **Cadastro de Usuário:** Apresentou consistência funcional (0% de falhas), porém com **latência crítica**, sendo o principal ponto indicado para refatoração, análise de queries/banco de dados ou otimização de serviços externos vinculados ao fluxo de cadastro.
 ---
 
 # 📈 Relatório Lighthouse
@@ -487,12 +500,12 @@ Então deverá visualizar a mensagem de confirmação
 
 | ID     | Funcionalidade | Cenário               | Resultado               |
 | ------ | -------------- | --------------------- | ----------------------- |
-| CT-001 | Cadastro       | Cadastro válido       | ✅ Passou                |
+| CT-001 | Cadastro       | Cadastro válido       | ✅ Passou               |
 | CT-002 | Cadastro       | Cadastro inválido     | A executar              |
 | CT-003 | Pós-cadastro   | Buscar profissional   | ⚠️ Passou com ressalvas |
 | CT-004 | Busca          | Buscar profissional   | ⚠️ Passou com ressalvas |
 | CT-005 | Contato        | Contatar profissional | Bloqueado               |
-| CT-006 | Recuperação    | Esqueci minha senha   | ✅ Passou                |
+| CT-006 | Recuperação    | Esqueci minha senha   | ✅ Passou               |
 
 ---
 

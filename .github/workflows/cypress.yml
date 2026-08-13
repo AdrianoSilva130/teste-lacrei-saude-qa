@@ -11,11 +11,9 @@ on:
 
 jobs:
   cypress-run:
-
     runs-on: ubuntu-latest
 
     steps:
-
       - name: Checkout repository
         uses: actions/checkout@v4
 
@@ -23,15 +21,28 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: npm
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Run Cypress Cadastro Test
+      - name: Run Cypress - Cadastro
         uses: cypress-io/github-action@v6
         with:
           browser: chrome
           spec: cypress/e2e/cadastro/cadastro.feature
+
+      - name: Run Cypress - Busca profissional
+        uses: cypress-io/github-action@v6
+        with:
+          browser: chrome
+          spec: cypress/e2e/busca-profissional/busca-profissional.feature
+
+      - name: Run Cypress - Recuperação de senha
+        uses: cypress-io/github-action@v6
+        with:
+          browser: chrome
+          spec: cypress/e2e/recuperacao-senha/recuperacao-senha.feature
 
       - name: Upload Cypress screenshots
         if: failure()

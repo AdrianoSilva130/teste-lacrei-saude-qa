@@ -1,3 +1,5 @@
+const env = require('../../config/env');
+
 class LoginPage {
 
     get email() {
@@ -207,7 +209,7 @@ class LoginPage {
 
         await this.preencherCampoReact(
             '#email',
-            'joadrito@gmail.com'
+            env.RECOVERY_EMAIL
         );
 
         console.log('Email de recuperação preenchido');

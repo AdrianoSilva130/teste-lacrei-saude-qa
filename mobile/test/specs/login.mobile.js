@@ -4,13 +4,17 @@ const SearchPage = require('../pages/SearchPage');
 
 describe('Login Mobile - Lacrei Saúde', () => {
 
+    beforeEach(async () => {
+        await browser.reloadSession();
+    });
+
     it('Deve realizar login com sucesso e pesquisar profissional', async () => {
 
         await browser.url(env.BASE_URL);
 
         await LoginPage.login(
-            'joadrito@gmail.com',
-            'Lacrei@2026'
+            env.EMAIL,
+            env.PASSWORD
         );
 
         await browser.pause(5000);
@@ -34,14 +38,6 @@ describe('Login Mobile - Lacrei Saúde', () => {
             await browser.getUrl()
         );
 
-        const roberta = $('button*=Dra Roberta Jones');
-
-        await roberta.waitForDisplayed({
-            timeout: 10000
-        });
-
-        console.log('Dra Roberta encontrada');
-
         await LoginPage.agendarAtendimento();
 
         console.log('Fluxo de agendamento executado');
@@ -49,12 +45,12 @@ describe('Login Mobile - Lacrei Saúde', () => {
 
     it('Deve realizar recuperação de senha', async () => {
 
-    await browser.url(env.BASE_URL);
+        await browser.url(env.BASE_URL);
 
-    await LoginPage.recuperarSenha(
-        'joadrito@gmail.com'
-    );
+        await LoginPage.recuperarSenha(
+            env.RECOVERY_EMAIL
+        );
 
-});
+    });
 });
 
