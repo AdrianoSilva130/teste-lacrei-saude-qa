@@ -1,3 +1,4 @@
+require('dotenv').config();
 const { defineConfig } = require('cypress');
 const createBundler = require('@bahmutov/cypress-esbuild-preprocessor');
 const { addCucumberPreprocessorPlugin } = require('@badeball/cypress-cucumber-preprocessor');
@@ -28,8 +29,12 @@ module.exports = defineConfig({
 
         supportFile: 'cypress/support/e2e.js',
 
+        env: {
+            LACREI_EMAIL: process.env.LACREI_EMAIL,
+            LACREI_PASSWORD: process.env.LACREI_PASSWORD,
+        },
+
         setupNodeEvents,
 
     },
-
-});
+})

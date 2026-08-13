@@ -1,14 +1,10 @@
 # language: pt
 
-Funcionalidade: Busca de profissional de saúde
+Funcionalidade: Busca e contato com profissional de saúde
 
-  Cenário: Buscar profissional de saúde
+  Cenário: Buscar profissional e validar contato
     Dado que estou na página de busca de profissionais
     Quando realizo uma busca por um profissional
-    Então devo visualizar os resultados da busca
-
-  Cenário: Contatar profissional de saúde
-    Dado que realizei uma busca por um profissional
-    E visualizei os resultados da busca
-    Quando seleciono um profissional
-    Então devo visualizar a opção de contato
+    E seleciono um profissional
+    E preencho o telefone para contato
+    Então devo visualizar a mensagem de telefone inválido

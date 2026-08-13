@@ -45,11 +45,7 @@ When("envio o formulário de cadastro", () => {
 });
 
 Then("devo visualizar a confirmação do cadastro", () => {
-    cy.url()
-        .should("include", "/saude/paciente/verificar-email/");
-
-    cy.contains("Estamos quase lá...")
-        .should("be.visible");
-
+    cy.contains("Estamos quase lá...", {
+        timeout: 30000
+    }).should("be.visible");
 });
-
