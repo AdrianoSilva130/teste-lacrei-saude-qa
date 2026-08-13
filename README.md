@@ -1,24 +1,33 @@
-# Desafio Técnico QA - Lacrei Saúde
+# Desafio Técnico QA — Lacrei Saúde
 
-Projeto desenvolvido para avaliação da qualidade da aplicação **Lacrei Saúde**, contemplando testes funcionais, automação Web, automação Mobile, testes de desempenho, acessibilidade, responsividade e registro de bugs encontrados durante a execução.
+Projeto desenvolvido para avaliação da qualidade da aplicação **Lacrei Saúde**, contemplando testes funcionais, testes exploratórios, automação Web, automação Mobile, testes de API, testes de performance, acessibilidade, responsividade e registro de defeitos.
 
----
-
-## Tecnologias utilizadas
-
-* JavaScript
-* Cypress
-* WebdriverIO
-* Appium
-* K6
-* Gherkin
-* Git
-* GitHub
-* GitHub Actions
+O projeto foi estruturado com foco em **qualidade, rastreabilidade, estabilidade dos testes e segurança das credenciais**.
 
 ---
 
-## Estrutura do projeto
+# Tecnologias utilizadas
+
+- JavaScript
+- Cypress
+- Cucumber / Gherkin
+- WebdriverIO
+- Appium
+- Postman
+- PactumJS
+- GraphQL
+- Apache JMeter
+- k6
+- Lighthouse
+- Git
+- GitHub
+- GitHub Actions
+- Docker
+- Faker.js
+
+---
+
+# Estrutura do projeto
 
 ```text
 Lacrei-Saude/
@@ -36,7 +45,9 @@ Lacrei-Saude/
 │   └── support/
 │
 ├── docs/
-│   └── gherkin/
+│   ├── gherkin/
+│   ├── acessibilidade.md
+│   └── matriz-rastreabilidade.md
 │
 ├── evidencias/
 │   └── bugs/
@@ -55,600 +66,567 @@ Lacrei-Saude/
 ├── package-lock.json
 ├── README.md
 └── wdio.conf.js
-```
+1. Segurança das credenciais
 
----
+As credenciais utilizadas nos testes automatizados não ficam armazenadas diretamente no código.
 
-# Testes Funcionais
+A configuração utiliza variáveis de ambiente:
 
-Foram realizados testes funcionais nos principais fluxos da aplicação, tanto manualmente quanto por meio de automação.
+LACREI_EMAIL
+LACREI_PASSWORD
+LACREI_RECOVERY_EMAIL
 
-## Login
+No ambiente local, as variáveis são carregadas por meio do .env.
 
-Validação do fluxo de login:
+No GitHub Actions, as credenciais são disponibilizadas utilizando GitHub Secrets, evitando a exposição de dados sensíveis no código-fonte.
 
-* Acessar a página de login.
-* Informar e-mail e senha.
-* Clicar em **Entrar**.
-* Validar o acesso à área de profissionais.
+O arquivo .env não deve ser versionado no repositório.
 
----
+2. Testes funcionais
 
-## Cadastro
+Foram realizados testes funcionais e exploratórios nos principais fluxos da aplicação.
 
-Foram realizadas validações relacionadas ao fluxo de cadastro, incluindo:
+Login
 
-* Cadastro com dados válidos.
-* Validação de campos.
-* Validação de e-mail.
-* Validação de senha.
-* Fluxo pós-cadastro.
+Validações realizadas:
 
----
+Acesso à tela de login.
+Preenchimento de e-mail.
+Preenchimento de senha.
+Login com credenciais válidas.
+Login com credenciais inválidas.
+Validação da mensagem de erro apresentada.
+Cadastro
 
-## Busca de profissionais
+Validações realizadas:
 
-Foram realizados testes no fluxo de busca de profissionais, considerando diferentes formas de preenchimento dos termos pesquisados.
+Cadastro com dados válidos.
+Validação dos campos obrigatórios.
+Validação de e-mail.
+Validação de senha.
+Confirmação de senha.
+Aceite dos termos e política de privacidade.
+Validação da idade.
+Fluxo pós-cadastro.
+Cadastro com senhas incompatíveis.
 
-Durante os testes foram identificados problemas relacionados à utilização de:
+Mensagem validada no cenário negativo:
 
-* Acentos.
-* Letras maiúsculas.
-* Tecla ENTER para executar a pesquisa.
+Senhas incompatíveis, tente novamente.
+Busca de profissionais
 
-Os problemas encontrados foram registrados como bugs e possuem evidências no projeto.
+Foram realizados testes exploratórios e automatizados no fluxo de busca.
 
----
+Foram avaliados:
 
-## Recuperação de senha
+Busca por profissional.
+Busca utilizando diferentes formas de escrita.
+Uso de acentos.
+Uso de letras maiúsculas.
+Uso da tecla Enter.
+Busca após autenticação.
 
-Foi validado o fluxo de recuperação de senha:
+Durante os testes foram identificados comportamentos inconsistentes relacionados a:
 
-* Acessar **Esqueci minha senha**.
-* Informar um e-mail.
-* Solicitar o envio do link.
-* Validar a mensagem apresentada após o envio.
+Acentos.
+Letras maiúsculas.
+Tecla Enter.
+
+Os defeitos estão documentados em evidencias/bugs/.
+
+Recuperação de senha
+
+Foi validado o fluxo:
+
+Acessar a tela de login.
+Selecionar Esqueci minha senha.
+Informar um e-mail válido.
+Solicitar o envio do link.
+Validar a mensagem apresentada.
 
 Mensagem validada:
 
-```text
 Verifique seu e-mail para redefinir a senha
-```
+3. Automação Web — Cypress + Cucumber
 
----
+A automação Web foi desenvolvida utilizando:
 
-# Automação Web — Cypress
-
-O projeto possui automação Web utilizando **Cypress**.
+Cypress
+Cucumber
+Gherkin
+Faker.js
 
 Os testes estão organizados por funcionalidade:
 
-```text
 cypress/
 └── e2e/
-    ├── busca-profissional/
     ├── cadastro/
+    ├── busca-profissional/
     └── recuperacao-senha/
-```
+Cenários automatizados
+Cadastro
+Cadastro com dados válidos.
+Cadastro com senhas incompatíveis.
+Busca
+Buscar profissional e validar o fluxo de contato/agendamento.
+Recuperação
+Solicitar recuperação de senha e validar a mensagem de confirmação.
+Execução
 
-Também fazem parte da estrutura:
+Instalar as dependências:
 
-```text
-cypress/
-├── fixtures/
-├── step_definitions/
-└── support/
-```
+npm install
 
-A configuração do Cypress está disponível em:
+Executar a suíte Cypress:
 
-```text
-cypress.config.js
-```
+npm test
 
-### Execução
+Ou:
 
-Para abrir o Cypress:
+npm run test:cypress
 
-```bash
-npx cypress open
-```
+Abrir a interface do Cypress:
 
-Para executar os testes em modo headless:
+npm run test:cypress:open
 
-```bash
+Executar diretamente:
+
 npx cypress run
-```
+4. Automação Mobile — Appium + WebdriverIO
 
----
+Foi realizada automação Mobile utilizando:
 
-# Testes Mobile
+Appium
+WebdriverIO
+Chrome no Android
+Android Emulator
+Page Object Model
 
-Foi realizada automação do fluxo Mobile utilizando:
+Os testes estão organizados em:
 
-* **Appium**
-* **WebdriverIO**
-* **Chrome no Android**
-* **Android Emulator**
-
-A estrutura dos testes Mobile está organizada da seguinte forma:
-
-```text
 mobile/
 ├── config/
 └── test/
     ├── pages/
     └── specs/
-```
+Cenários automatizados
+Login e busca
+Login com credenciais válidas.
+Busca de profissional.
+Agendamento.
+Validação do fluxo de contato.
+Recuperação de senha
+Acesso à recuperação de senha.
+Preenchimento do e-mail.
+Envio do link.
+Validação da mensagem de confirmação.
+Cenário negativo
+Login com credenciais inválidas.
+Validação da mensagem:
+E-mail ou senha incorretos. Esqueceu a sua senha? Clique em "Esqueci minha senha" para recuperá-la.
+Estabilidade
 
-O projeto utiliza Page Object para organização dos elementos e ações dos testes.
+As esperas fixas com browser.pause() foram removidas.
 
----
+Foram utilizadas esperas condicionais baseadas no estado dos elementos, como:
 
-## Cenário Mobile — Recuperação de senha
+waitForDisplayed()
+waitForClickable()
+waitForEnabled()
+waitForExist()
+scrollIntoView()
 
-Foi automatizado o fluxo de recuperação de senha no ambiente Mobile.
+Essa abordagem reduz a dependência de tempos fixos e melhora a estabilidade da automação.
 
-O cenário realiza:
+Execução
 
-1. Acesso à aplicação.
-2. Localização de **Esqueci minha senha**.
-3. Clique na opção.
-4. Preenchimento do e-mail.
-5. Clique em **Enviar link**.
-6. Validação da mensagem de confirmação.
+Com o Android Emulator e o Appium Server iniciados:
 
-A mensagem validada foi:
+npm run test:mobile
 
-```text
-Verifique seu e-mail para redefinir a senha
-```
+ou:
 
-### Resultado da execução
+npx wdio run wdio.conf.js
+5. Testes de API
 
-O teste foi executado com sucesso utilizando:
+Foram desenvolvidos testes utilizando diferentes abordagens:
 
-```text
-Chrome on Android
-```
+Postman
+PactumJS
+GraphQL
+
+Foram realizadas validações relacionadas a:
+
+Requisições HTTP.
+Respostas da API.
+Dados retornados.
+Contratos.
+Fluxos de API.
+Consultas GraphQL.
+
+Os projetos e exemplos relacionados aos testes de API fazem parte do portfólio de exercícios desenvolvido durante a formação em QA.
+
+6. Testes de performance
+
+Foram utilizados:
+
+k6
+Apache JMeter
+
+Os testes foram executados no ambiente de Staging com foco em operações relevantes da aplicação.
+
+k6
+Cenário 1 — Cadastro de usuário
+VUs: 30
+Duração: 30 segundos
+Endpoint: POST /v1/lacreiid/user/
+
+Resultados registrados:
+
+Métrica	Resultado
+VUs	30
+Duração	30s
+Requisições concluídas	12
+Cadastros realizados	100%
+Falhas HTTP	0%
+Tempo médio	34,23s
+Mediana	34,21s
+P90	51,80s
+P95	53,84s
+Tempo máximo	55,71s
+Análise
+
+Todas as requisições concluídas retornaram sucesso HTTP 201, sem falhas HTTP.
+
+Foi observada, entretanto, latência elevada, representando um ponto de atenção para futuras otimizações.
+
+Como não foi definido um SLA específico para o endpoint, o resultado foi registrado como observação de performance e não como falha de requisito.
+
+Cenário 2 — Busca de profissionais
+
+Fluxo:
+
+Login → Busca de profissionais
+
+Endpoint:
+
+GET /v1/lacreisaude/professionals/?search=medico
+
+Resultados registrados:
+
+Métrica	Resultado
+VUs	30
+Duração	30s
+Requisições	36
+Login realizado	100%
+Busca realizada	100%
+Falhas HTTP	0%
+Tempo médio	2,24s
+Mediana	2,10s
+P90	3,83s
+P95	4,09s
+Tempo máximo	4,46s
+Análise
+
+O cenário apresentou 100% de sucesso nas requisições executadas e 0% de falhas HTTP.
+
+7. Acessibilidade
+
+Foi realizada avaliação utilizando:
+
+Google Lighthouse
+Navegação por teclado
+TAB
+SHIFT + TAB
+Foco visual
+ENTER / ESPAÇO
+Resultado
+
+Lighthouse Accessibility: 96/100
+
+Foram identificados pontos relacionados a:
+
+Elementos de perfil e logout durante navegação por teclado.
+Recurso VLibras com problema de carregamento.
+
+A documentação está disponível em:
+
+docs/acessibilidade.md
+8. Responsividade
+
+Foram realizadas validações em diferentes resoluções.
+
+Mobile
+
+390x844
 
 Resultado:
 
-```text
-Spec Files: 1 passed, 1 total
-100% completed
-```
+✅ Aprovado
 
-Comando utilizado:
+Validações:
 
-```bash
-npx wdio run wdio.conf.js
-```
+Adaptação do layout.
+Ausência de cortes.
+Ausência de sobreposição.
+Acesso aos menus.
+Funcionamento dos formulários.
+Desktop
 
----
+1366x768
 
-# 📊 Testes de Performance
+Resultado:
 
-Os testes de performance foram realizados utilizando a ferramenta **k6**, com o objetivo de avaliar o comportamento de operações críticas da aplicação sob carga, analisando a estabilidade e o tempo de resposta do sistema frente a acessos simultâneos.
+⚠️ Parcial
 
----
+Foram identificados problemas de sobreposição de texto e imagens nas seções:
 
-## ⚙️ Configuração Geral dos Testes
+O que é a Lacrei Saúde.
+Missão, Visão e Valores.
 
-- **Ferramenta:** k6
-- **Usuários Virtuais (VUs):** 30
-- **Duração:** 30 segundos
-- **Ambiente:** Staging
-- **Cenários Avaliados:**
-  1. Cadastro de Usuário
-  2. Busca de Profissionais
+Também foi identificado problema relacionado ao carregamento do VLibras.
 
----
+9. Bugs encontrados
 
-## 🧪 Cenários de Teste
+Os defeitos foram registrados seguindo uma estrutura padronizada contendo:
 
-### 1. Cenário 1 — Cadastro de Usuário
+Descrição.
+Severidade.
+Prioridade.
+Impacto.
+Ambiente.
+Categoria.
+Status.
+Pré-condições.
+Passos para reprodução.
+Resultado esperado.
+Resultado atual.
+Evidências.
 
-#### 🎯 Objetivo
-Avaliar o comportamento e a capacidade de processamento da API de cadastro de usuários sob uma carga simultânea de até 30 VUs.
+Os registros estão disponíveis em:
 
-#### 🔗 Endpoint
-- **Método / Rota:** `POST /v1/lacreiid/user/`
-
-#### 📝 Dados Utilizados
-- **Nome:** Adriano
-- **Sobrenome:** Silva
-- **E-mail:** *Gerado dinamicamente*
-- **Senha:** *Gerada dinamicamente*
-- **Demais campos:** Preenchidos com dados válidos conforme contrato da API.
-
-#### 📊 Resultados
-| Métrica                    | Resultado |
-| :------------------------- | :-------- |
-| **VUs**                    | 30        |
-| **Duração**                | 30s       |
-| **Requisições Concluídas** | 12        |
-| **Cadastros Realizados**   | 100%      |
-| **Falhas HTTP**            | 0%        |
-| **Tempo Médio**            | 34,23s    |
-| **Mediana**                | 34,21s    |
-| **P90**                    | 51,80s    |
-| **P95**                    | 53,84s    |
-| **Tempo Máximo**           | 55,71s    |
-
-#### 🔍 Análise
-- **Estabilidade:** Todas as requisições concluídas retornaram sucesso (`HTTP 201`), sem ocorrência de erros HTTP.
-- **Gargalo / Ponto de Atenção:** Foi identificada uma latência muito elevada no processamento do cadastro, apresentando tempo médio de **34,23s** e **P95 de 53,84s**.
-- **Nota:** Como o projeto não possui um SLA ou limite pré-definido de tempo de resposta para esta operação, o resultado é classificado como uma **observação de performance** para futuras otimizações, e não como uma falha de requisito.
-
----
-
-### 2. Cenário 2 — Busca de Profissionais
-
-#### 🎯 Objetivo
-Avaliar a estabilidade e o tempo de resposta da busca de profissionais sob carga simultânea após o fluxo de autenticação.
-
-#### 🔄 Fluxo Testado
-`Login` ➔ `Busca de Profissionais`
-
-#### 🔗 Endpoint
-- **Método / Rota:** `GET /v1/lacreisaude/professionals/?search=medico`
-
-#### 📊 Resultados
-| Métrica             | Resultado |
-| :------------------ | :-------- |
-| **VUs**             | 30        |
-| **Duração**         | 30s       |
-| **Requisições**     | 36        |
-| **Login Realizado** | 100%      |
-| **Busca Realizada** | 100%      |
-| **Falhas HTTP**     | 0%        |
-| **Tempo Médio**     | 2,24s     |
-| **Mediana**         | 2,10s     |
-| **P90**             | 3,83s     |
-| **P95**             | 4,09s     |
-| **Tempo Máximo**    | 4,46s     |
-
-#### 🔍 Análise
-- **Disponibilidade:** 100% de sucesso em todas as verificações do fluxo (login + busca) com **0% de falhas HTTP**.
-- **Desempenho:** Apresentou tempo médio de resposta de **2,24s** e **P95 de 4,09s**, demonstrando boa estabilidade funcional sob a carga aplicada, embora haja variação no tempo de resposta em picos.
-
----
-
-## 📌 Conclusão e Próximos Passos
-
-Os testes executados estabelecem um **baseline de performance** para a aplicação no ambiente de Staging com a carga de 30 VUs / 30s:
-
-1. **Busca de Profissionais:** Demonstrou alta estabilidade e comportamento pré-visível, mantendo 100% de disponibilidade.
-2. **Cadastro de Usuário:** Apresentou consistência funcional (0% de falhas), porém com **latência crítica**, sendo o principal ponto indicado para refatoração, análise de queries/banco de dados ou otimização de serviços externos vinculados ao fluxo de cadastro.
----
-
-# 📈 Relatório Lighthouse
-
-O relatório completo gerado pelo Google Lighthouse encontra-se em:
-
-```text
-performance/lighthouse-report.html
-```
-
-Para visualizar o relatório, basta abrir o arquivo `lighthouse-report.html` em qualquer navegador.
-
----
-
-# ♿ Testes de Acessibilidade
-
-Foi realizada validação utilizando o **Lighthouse** e testes manuais de navegação por teclado.
-
-## Resultado Lighthouse
-
-**Acessibilidade: 96/100**
-
-### Validações realizadas
-
-* Navegação utilizando a tecla TAB.
-* Navegação reversa utilizando SHIFT + TAB.
-* Validação de foco visual.
-* Acionamento de botões utilizando ENTER/ESPAÇO.
-* Validação de links via teclado.
-* Verificação de ausência de armadilhas de foco.
-
-### Insights encontrados
-
-Foi identificado que os elementos de **perfil e logout** não são acessíveis durante a navegação utilizando a tecla TAB.
-
-Também foi identificado um problema no recurso **VLibras**, onde o botão permite interação, porém o recurso não é carregado devido a erro no carregamento do script.
-
-A documentação relacionada aos testes de acessibilidade está disponível em:
-
-```text
-docs/acessibilidade.md
-```
-
----
-
-# 📱 Testes de Responsividade
-
-Foram realizados testes em diferentes resoluções.
-
-## Mobile
-
-**Resolução:** 390x844
-
-**Resultado:** ✅ Aprovado
-
-### Validações realizadas
-
-* Layout adaptado ao tamanho da tela.
-* Elementos sem cortes ou sobreposição.
-* Botões e menus acessíveis.
-* Formulários funcionais.
-* Navegação adequada.
-
----
-
-## Desktop
-
-**Resolução:** 1366x768
-
-**Resultado:** ⚠️ Parcial
-
-### Insights encontrados
-
-Foi identificada sobreposição parcial de texto e imagens nas seções:
-
-* **O que é a Lacrei Saúde**
-* **Missão, Visão e Valores**
-
-Também foi identificado que o recurso **VLibras** não é carregado corretamente.
-
----
-
-# 🐞 Bugs encontrados
-
-Durante os testes manuais foram identificados problemas funcionais e de interface.
-
-As evidências estão organizadas em:
-
-```text
-evidencias/
-└── bugs/
-```
-
-## BUG-001 — Validação do número de celular
-
-Durante o fluxo que utiliza o número de celular para envio de código, mesmo utilizando um formato aceito pela interface, a aplicação apresentou a mensagem:
-
-```text
-Número de celular incorreto. Digite novamente.
-```
-
-O fluxo ficou impedido de prosseguir utilizando o envio do código pelo celular.
-
----
-
-## BUG-002 — Busca com acentos e letras maiúsculas
-
-Foi identificado comportamento inconsistente na busca quando os termos pesquisados possuem acentos ou letras maiúsculas.
-
-Exemplos:
-
-```text
-médico
-São Paulo
-```
-
-A busca apresenta comportamento diferente quando os termos são utilizados sem acentos e em letras minúsculas.
-
----
-
-## BUG-003 — Busca utilizando a tecla ENTER
-
-Foi identificado que pressionar a tecla **ENTER** após informar o termo de pesquisa não executa a busca.
-
-O comportamento observado foi:
-
-* Digitar o termo.
-* Pressionar ENTER.
-* Busca não é executada.
-
-Ao clicar no botão de busca com o mouse, a pesquisa é executada.
-
----
-
-## BUG-004 — Problema identificado durante os testes
-
-Um quarto problema foi registrado durante a execução dos testes manuais.
-
-As respectivas evidências estão disponíveis no diretório:
-
-```text
 evidencias/bugs/
-```
+BUG-001
 
----
+Pesquisa de profissionais não funciona com a tecla Enter
 
-# 📝 BDD e Gherkin
+Severidade: Média
+Prioridade: Média
 
-O projeto possui documentação de cenários utilizando **BDD/Gherkin**.
+A busca não é executada corretamente utilizando Enter.
 
-Os arquivos estão organizados em:
+BUG-002
 
-```text
-docs/
-└── gherkin/
-```
+Busca de profissionais não retorna resultados com acentos ou letras maiúsculas
 
-A utilização do Gherkin permite estruturar os comportamentos esperados da aplicação de forma clara e organizada.
+Severidade: Média
+Prioridade: Média
+
+A busca apresenta comportamento inconsistente com termos contendo acentos ou letras maiúsculas.
+
+BUG-003
+
+Número de celular válido é rejeitado ao solicitar código de confirmação
+
+Severidade: Alta
+Prioridade: Alta
+
+O fluxo de agendamento fica bloqueado após a tentativa de envio do código.
+
+BUG-004
+
+Cadastro aceita e-mail com domínio inexistente
+
+Severidade: Média
+Prioridade: Média
+
+O sistema permite avançar no cadastro mesmo utilizando um domínio de e-mail inexistente.
+
+10. Rastreabilidade
+
+A rastreabilidade entre requisitos, casos de teste, automação e defeitos foi documentada em:
+
+docs/matriz-rastreabilidade.md
+
+A matriz relaciona:
+
+Requisito
+   ↓
+Caso de teste
+   ↓
+Tipo de teste
+   ↓
+Automação
+   ↓
+Bug relacionado
+   ↓
+Resultado
+11. BDD e Gherkin
+
+Os cenários automatizados Web utilizam BDD/Gherkin.
+
+Os arquivos .feature estão organizados em:
+
+cypress/e2e/
+
+A documentação adicional encontra-se em:
+
+docs/gherkin/
 
 Exemplo:
 
-```gherkin
-Funcionalidade: Recuperação de senha
+Feature: Recuperação de senha
 
-Cenário: Recuperar senha com e-mail válido
+  Scenario: Recuperar senha com e-mail válido
+    Given que o usuário está na tela de login
+    When acessar a opção de recuperação de senha
+    And informar um e-mail válido
+    And solicitar o envio do link
+    Then deverá visualizar a mensagem de confirmação
+12. Matriz de resultados
 
-Dado que o usuário está na tela de login
-Quando acessar a opção de recuperação de senha
-E informar um e-mail válido
-E solicitar o envio do link
-Então deverá visualizar a mensagem de confirmação
-```
+Os principais cenários executados estão rastreados na documentação:
 
----
+docs/matriz-rastreabilidade.md
 
-# 📋 Resultado dos testes Mobile
+A matriz contempla testes:
 
-| ID     | Funcionalidade | Cenário               | Resultado               |
-| ------ | -------------- | --------------------- | ----------------------- |
-| CT-001 | Cadastro       | Cadastro válido       | ✅ Passou               |
-| CT-002 | Cadastro       | Cadastro inválido     | A executar              |
-| CT-003 | Pós-cadastro   | Buscar profissional   | ⚠️ Passou com ressalvas |
-| CT-004 | Busca          | Buscar profissional   | ⚠️ Passou com ressalvas |
-| CT-005 | Contato        | Contatar profissional | Bloqueado               |
-| CT-006 | Recuperação    | Esqueci minha senha   | ✅ Passou               |
+Manuais.
+Web.
+Mobile.
+Negativos.
+API.
+Performance.
+Acessibilidade.
+Bugs relacionados.
+13. CI/CD — GitHub Actions
 
----
+O projeto possui workflow configurado com GitHub Actions para automação dos testes Cypress.
 
-# 📸 Evidências
+O workflow está localizado em:
 
-As evidências dos bugs encontrados durante os testes estão organizadas em:
+.github/workflows/
 
-```text
-evidencias/
-└── bugs/
-```
+As credenciais utilizadas pelo CI são disponibilizadas por meio de GitHub Secrets, sem armazenamento de informações sensíveis no código.
 
-As evidências têm como objetivo complementar os registros dos problemas identificados durante a execução dos testes.
+Os cenários Cypress estão configurados para execução automatizada no pipeline.
 
----
+A execução no ambiente de CI ainda apresenta um comportamento específico de autenticação no ambiente de Staging, enquanto a suíte permanece validada localmente.
 
-# 🔄 CI/CD
+14. Configuração e reprodutibilidade
 
-O projeto possui estrutura de workflows utilizando **GitHub Actions**:
+As principais ferramentas e dependências estão declaradas no:
 
-```text
-.github/
-└── workflows/
-```
+package.json
 
-Os workflows permitem automatizar a execução das atividades de teste configuradas no projeto.
+e:
 
----
+package-lock.json
 
-# ▶️ Como executar o projeto
+Scripts disponíveis:
 
-## Instalação
+npm test
 
-Clone o repositório:
+Executa a suíte Cypress.
 
-```bash
+npm run test:cypress
+
+Executa os testes Cypress em modo headless.
+
+npm run test:cypress:open
+
+Abre a interface do Cypress.
+
+npm run test:mobile
+
+Executa os testes Mobile com WebdriverIO.
+
+15. Como executar o projeto
+Instalação
 git clone https://github.com/AdrianoSilva130/teste-lacrei-saude-qa.git
-```
 
-Acesse a pasta:
+Acesse o diretório do projeto:
 
-```bash
-cd Lacrei-Saude
-```
+cd teste-lacrei-saude-qa
 
 Instale as dependências:
 
-```bash
 npm install
-```
 
----
+Configure as variáveis de ambiente locais no arquivo .env:
 
-## Cypress
+LACREI_EMAIL=seu_email
+LACREI_PASSWORD=sua_senha
+LACREI_RECOVERY_EMAIL=seu_email_de_recuperacao
 
-Abrir interface do Cypress:
+Nunca versione o .env.
 
-```bash
-npx cypress open
-```
+Cypress
+npm test
 
-Executar em modo headless:
+ou:
 
-```bash
 npx cypress run
-```
-
----
-
-## WebdriverIO / Appium
-
-Para executar os testes Mobile:
-
-1. Inicie o Android Emulator.
-2. Inicie o Appium Server.
-3. Execute:
-
-```bash
-npx wdio run wdio.conf.js
-```
-
----
-
-## K6
-
-Os testes de desempenho estão localizados em:
-
-```text
-performance/
-```
-
-A execução é feita utilizando o K6:
-
-```bash
+WebdriverIO / Appium
+Inicie o Android Emulator.
+Verifique o dispositivo:
+adb devices
+Inicie o Appium Server.
+Execute:
+npm run test:mobile
+k6
 k6 run performance/<arquivo>.js
-```
+16. Evidências
 
----
+As evidências dos defeitos encontrados estão organizadas em:
 
-# 📚 Documentação
-
-Documentação complementar disponível no projeto:
-
-```text
-docs/
-├── gherkin/
-└── acessibilidade.md
-```
-
-As evidências dos bugs estão disponíveis em:
-
-```text
 evidencias/
 └── bugs/
-```
 
----
+Também estão disponíveis arquivos relacionados a:
 
-# 🎯 Conclusão
+Bugs funcionais.
+Acessibilidade.
+Responsividade.
+VLibras.
+Cadastro.
+Validações de interface.
+17. Conclusão
 
-O projeto permitiu avaliar diferentes aspectos da aplicação Lacrei Saúde por meio de testes manuais e automatizados.
+O projeto contempla diferentes dimensões da qualidade de software, incluindo:
 
-Foram aplicadas diferentes abordagens de qualidade, incluindo:
+Testes funcionais.
+Testes exploratórios.
+Automação Web.
+Automação Mobile.
+Testes de API.
+Testes de performance.
+Testes de acessibilidade.
+Testes de responsividade.
+BDD/Gherkin.
+Cenários positivos e negativos.
+Rastreabilidade.
+Gestão de defeitos.
+Evidências.
+Segurança de credenciais.
+GitHub Actions.
 
-* Testes funcionais.
-* Automação Web com Cypress.
-* Automação Mobile com Appium e WebdriverIO.
-* Testes de desempenho com K6.
-* Testes de acessibilidade.
-* Testes de responsividade.
-* BDD/Gherkin.
-* Registro e documentação de bugs.
-* Coleta de evidências.
-* Integração com GitHub Actions.
+As melhorias realizadas após a avaliação incluem:
 
-Os testes de desempenho demonstraram que os endpoints avaliados não apresentaram erros HTTP durante os cenários executados, porém apresentaram tempos de resposta superiores aos critérios definidos.
+Remoção de credenciais do código.
+Utilização de variáveis de ambiente e GitHub Secrets.
+Padronização dos scripts do projeto.
+Inclusão de matriz de rastreabilidade.
+Remoção de browser.pause() da automação Mobile.
+Utilização de esperas condicionais.
+Inclusão de cenário negativo de login Mobile.
+Inclusão de cenário negativo de cadastro com senhas incompatíveis.
+Padronização dos registros de bugs.
 
-Também foram identificados pontos de melhoria relacionados à busca, validação de telefone, acessibilidade, VLibras e responsividade.
+O projeto busca demonstrar não apenas a execução de testes, mas também uma abordagem estruturada de investigação, automação, documentação, rastreabilidade e melhoria contínua da qualidade.
 
----
+👨‍💻 Autor
 
-# 👨‍💻 Autor
+Adriano Silva
 
-**Adriano Silva**
-
-Projeto desenvolvido como parte do desafio técnico de QA da **Lacrei Saúde**, com foco em avaliação de qualidade, testes funcionais, automação, Mobile, performance, acessibilidade e responsividade.
+Projeto desenvolvido como parte do desafio técnico de QA da Lacrei Saúde, com foco em qualidade, testes funcionais, automação Web e Mobile, API, performance, acessibilidade, responsividade e análise de defeitos.

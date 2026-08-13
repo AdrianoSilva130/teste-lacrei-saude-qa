@@ -17,8 +17,6 @@ describe('Login Mobile - Lacrei Saúde', () => {
             env.PASSWORD
         );
 
-        await browser.pause(5000);
-
         console.log('Login realizado com sucesso!');
 
         await SearchPage.campoBusca.waitForDisplayed({
@@ -29,14 +27,7 @@ describe('Login Mobile - Lacrei Saúde', () => {
 
         await SearchPage.pesquisar('medico');
 
-        await browser.pause(5000);
-
         console.log('Pesquisa realizada com sucesso!');
-
-        console.log(
-            'URL após pesquisa:',
-            await browser.getUrl()
-        );
 
         await LoginPage.agendarAtendimento();
 
@@ -50,7 +41,29 @@ describe('Login Mobile - Lacrei Saúde', () => {
         await LoginPage.recuperarSenha(
             env.RECOVERY_EMAIL
         );
+    });
 
+    it('Deve impedir login com credenciais inválidas', async () => {
+
+        await browser.url(
+            'https://paciente-staging.lacreisaude.com.br/login/'
+        );
+
+        await LoginPage.loginComErro(
+            'email-invalido@teste.com',
+            'SenhaInvalida@123'
+        );
+
+        const mensagemErro = $(
+            'span*=E-mail ou senha incorretos. Esqueceu a sua senha?'
+        );
+
+        await mensagemErro.waitForDisplayed({
+            timeout: 30000
+        });
+
+        await expect(mensagemErro).toHaveText(
+            'E-mail ou senha incorretos. Esqueceu a sua senha? Clique em "Esqueci minha senha" para recuperá-la.'
+        );
     });
 });
-
