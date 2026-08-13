@@ -27,7 +27,7 @@ When("solicito a recuperação da senha", () => {
         timeout: 30000
     })
         .should("be.visible")
-        .type(Cypress.env("LACREI_EMAIL"));
+        .type(Cypress.env("LACREI_RECOVERY_EMAIL"));
 
     cy.get('button[type="submit"]', {
         timeout: 30000

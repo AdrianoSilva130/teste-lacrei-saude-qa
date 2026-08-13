@@ -13,6 +13,11 @@ jobs:
   cypress-run:
     runs-on: ubuntu-latest
 
+    env:
+      LACREI_EMAIL: ${{ secrets.LACREI_EMAIL }}
+      LACREI_PASSWORD: ${{ secrets.LACREI_PASSWORD }}
+      LACREI_RECOVERY_EMAIL: ${{ secrets.LACREI_RECOVERY_EMAIL }}
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4

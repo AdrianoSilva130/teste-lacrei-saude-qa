@@ -17,13 +17,27 @@ Given("que estou na página de busca de profissionais", () => {
 
     cy.location("pathname", {
         timeout: 30000
-    }).should("not.eq", "/login");
+    }).then((pathname) => {
+        cy.log(`PATH APÓS LOGIN: ${pathname}`);
+        console.log(`PATH APÓS LOGIN: ${pathname}`);
+    });
 
-    cy.get("#campo-de-busca", {
-        timeout: 30000
-    }).should("be.visible");
-});
+    cy.url().then((url) => {
+        cy.log(`URL APÓS LOGIN: ${url}`);
+        console.log(`URL APÓS LOGIN: ${url}`);
+    });
 
+    cy.get("body").then(($body) => {
+        console.log(
+            "TEXTO DA PÁGINA APÓS LOGIN:",
+            $body.text().substring(0, 1000)
+        );
+    });
+
+    cy.url().then((url) => {
+        throw new Error(`URL APÓS LOGIN NO CI: ${url}`);
+    })
+})
 When("realizo uma busca por um profissional", () => {
     cy.get("#campo-de-busca", {
         timeout: 30000
